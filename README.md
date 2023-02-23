@@ -1,6 +1,10 @@
 # 配置
-cnpm install
-npm run dev
+ 1. 
+   - cnpm@7.1.0
+   - node@17.8.0
+2. 
+   - cnpm install
+   - npm run dev
 
 
 
