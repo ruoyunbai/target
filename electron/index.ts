@@ -9,6 +9,7 @@ const createWindow = () => {
       nodeIntegration: true,
     },
   });
+  win.webContents.openDevTools()
   // app.isPackaged 字段存在bug，即使正常打包后，仍然为false，所以不能用来判断项目是否经过打包
   if (process.env.NODE_ENV === 'development') {
     // 开发环境
