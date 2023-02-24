@@ -1,6 +1,6 @@
 <template>
     <el-row>
-        <el-col :span="8" >
+        <el-col :span="8">
             <div class="grid-content ep-bg-purple-dark" />
             <el-select v-model="value" style="width:248px" :disabled="!portsLoaded" class="m-4" placeholder="选择串口"
                 size="large">
@@ -17,30 +17,41 @@
                 </el-select>
             </el-tooltip>
             <div></div>
-            <el-button :type="buttonType"  v-on:click="handleClick()">{{ buttonContent }}</el-button>
+            <el-button :type="buttonType" v-on:click="handleClick()">{{ buttonContent }}</el-button>
             <el-card class="box-card">
-    <template #header>
-      <div >
-        <span>接收设置</span>
-      </div>
-    </template>
-    <div class="mb-2 flex items-center text-sm">
-    <el-radio-group v-model="modeRec" class="ml-4">
-      <el-radio label="1" size="large">Option 1</el-radio>
-      <el-radio label="2" size="large">Option 2</el-radio>
-      <el-radio label="2" size="large">Option 3</el-radio>
-    </el-radio-group>
-    <el-divider />
-  </div>
-  </el-card>
-  <el-card class="box-card">
-    <template #header>
-      <div >
-        <span>发送设置</span>
-      </div>
-    </template>
-   
-  </el-card>
+                <template #header>
+                    <div>
+                        <span>接收设置</span>
+                    </div>
+                </template>
+                <div class="mb-2 flex items-center text-sm">
+                    <el-radio-group v-model="modeRec" class="ml-4">
+                        <el-radio label="asc" size="small">ASC II</el-radio>
+                        <el-radio label="hex" size="small">HEX</el-radio>
+                        <el-radio label="bin" size="small">BIN</el-radio>
+                    </el-radio-group>
+                </div>
+                <el-divider />
+                <div>
+
+                    <el-checkbox v-model="ifAutoLine" label="自动换行" size="small" />
+                    <el-checkbox v-model="ifAutoSave" label="自动保存" size="small" />
+                </div>
+            </el-card>
+            <el-card class="box-card">
+                <template #header>
+                    <div>
+                        <span>发送设置</span>
+                    </div>
+                </template>
+                <div class="mb-2 flex items-center text-sm">
+                    <el-radio-group v-model="modeSend" class="ml-4">
+                        <el-radio label="asc" size="small">ASC II</el-radio>
+                        <el-radio label="hex" size="small">HEX</el-radio>
+                        <el-radio label="bin" size="small">BIN</el-radio>
+                    </el-radio-group>
+                </div>
+            </el-card>
         </el-col>
         <el-col :span="16">
             <div class="grid-content ep-bg-purple-light" />
@@ -65,9 +76,12 @@
 import { ElMessage } from 'element-plus';
 import { onMounted, ref, reactive, Ref } from 'vue'
 import { Right } from '@element-plus/icons-vue'
+const ifAutoLine = ref(false)
+const ifAutoSave = ref(false)
 const sendStr = ref("")
 const oports = ref()
-const modeRec=ref()
+const modeRec = ref()
+const modeSend = ref()
 // import {SerialPort} from "serialport"
 const buttonType = ref("default")
 const serialport = require('serialport')
