@@ -35,7 +35,7 @@
                 <el-divider />
                 <div>
 
-                    <el-checkbox v-model="ifAutoLine" label="自动换行" size="small" />
+                    <el-checkbox v-model="ifRecAutoLine" label="自动换行" size="small" />
                     <el-checkbox v-model="ifAutoSave" label="自动保存" size="small" />
                 </div>
             </el-card>
@@ -54,7 +54,7 @@
                     </el-radio-group>
                 </div>
                 <el-divider/>
-                <el-checkbox v-model="ifAutoLine" label="自动换行" size="small" />
+                <el-checkbox v-model="ifSendAutoLine" label="自动换行" size="small" />
             </el-card>
         </el-col>
         <el-col :span="16">
@@ -64,17 +64,19 @@
                 <el-input style="white-space: pre-line;" v-model="content" :rows="10" type="textarea"
                     placeholder="接收到的内容" />
             </el-card>
-            <el-tooltip class="box-item" effect="dark" content="回车或者点击图标发送" placement="bottom">
-                <el-input v-model="sendStr" placeholder="输入发送的内容(内容为空时将发送换行符)" class="input-with-select" @keyup.enter="handleSend()">
+           
+                <el-input v-model="sendStr" placeholder="输入发送的内容(内容为空时将发送换行符)"   @keyup.enter="handleSend()" class="input-with-select">
           
 
                 <template #append>
+                    <el-tooltip class="box-item" effect="dark" content="回车或者点击图标发送" placement="bottom">
                     <div>
                         <el-button type="success" round v-on:click="handleSend()" :icon="Right" />
                     </div>
+        </el-tooltip>
+
                 </template>
             </el-input>
-        </el-tooltip>
         </el-col>
     </el-row>
 </template>
@@ -83,12 +85,13 @@
 import { ElMessage } from 'element-plus';
 import { onMounted, ref, reactive, Ref } from 'vue'
 import { Right } from '@element-plus/icons-vue'
-const ifAutoLine = ref(false)
+const ifRecAutoLine = ref(true)
+const ifSendAutoLine = ref(false)
 const ifAutoSave = ref(false)
 const sendStr = ref("")
 const oports = ref()
-const modeRec = ref()
-const modeSend = ref()
+const modeRec = ref("ascii")
+const modeSend = ref("ascii")
 // import {SerialPort} from "serialport"
 const buttonType = ref("default")
 const serialport = require('serialport')
@@ -126,7 +129,10 @@ const bauds = [
 let sp: any
 const handleSend = () => {
     if(sendStr.value!=""){
-        sp.write(sendStr.value + "\n")
+        sp.write(sendStr.value)
+        if(ifSendAutoLine){
+            sp.write("\n")
+        }
         sendStr.value = ""
     }
     else
@@ -160,7 +166,7 @@ const handleClick = () => {
                 else{
                     content.value +=  strToBinary(str.toString("utf8"))
                 }
-                if(ifAutoLine)content.value+="\n"
+                if(ifRecAutoLine)content.value+="\n"
 
                 const textarea = document.getElementsByClassName('el-textarea__inner')[0];
                 textarea.scrollTop = textarea.scrollHeight;
