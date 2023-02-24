@@ -1,5 +1,5 @@
 <template>
-<el-select v-model="value" class="m-2" placeholder="Select" size="large">
+<el-select v-model="value" :disabled="!portsLoaded" class="m-2" placeholder="选择串口" size="large">
     <el-option
       v-for="item in options"
       :key="item.value"
@@ -19,6 +19,7 @@ const oports=ref()
 const serialport= require('serialport')
 
 const value = ref('')
+const portsLoaded=ref(false)
 
 const options:any =reactive([
   
@@ -36,6 +37,7 @@ onMounted(async ()=>{
             })
             
         });
+        portsLoaded.value=true
         oports.value=ports
     } catch (error) {
         console.log(error);
