@@ -1,23 +1,41 @@
 <template>
-<div>
-Serial
-</div>
-<div>{{ oports }}</div>
+<el-select v-model="value" class="m-2" placeholder="Select" size="large">
+    <el-option
+      v-for="item in options"
+      :key="item.value"
+      :label="item.label"
+      :value="item.value"
+    />
+</el-select>
+
 
 </template>
 
 <script setup lang="ts">
-import {onMounted,ref} from 'vue'
+import {onMounted,ref,reactive} from 'vue'
 const oports=ref()
 // import {SerialPort} from "serialport"
 
 const serialport= require('serialport')
+
+const value = ref('')
+
+const options:any =reactive([
+  
+])
 
 onMounted(async ()=>{
     // listSerialPorts()
     try {
         let ports = await serialport.SerialPort.list();
         console.log(ports); // 打印串口列表
+        ports.forEach((port: any)=> {
+            options.push({
+                value:port.path,
+                label:port.friendlyName
+            })
+            
+        });
         oports.value=ports
     } catch (error) {
         console.log(error);
