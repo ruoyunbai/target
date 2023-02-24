@@ -1,5 +1,6 @@
 <template>
-<el-select v-model="value" :disabled="!portsLoaded" class="m-2" placeholder="选择串口" size="large">
+    
+<el-select v-model="value"   style="width: 300px" :disabled="!portsLoaded" class="m-4" placeholder="选择串口" size="large">
     <el-option
       v-for="item in options"
       :key="item.value"

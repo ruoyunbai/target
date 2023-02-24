@@ -9,9 +9,11 @@
     <el-menu-item index="/mqtt">MQTT</el-menu-item>
   
   </el-menu>
+  <transition name="el-fade-in-linear">
+    <router-view></router-view>
 
+      </transition>
 
-  <router-view></router-view>
 
   
  
