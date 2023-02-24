@@ -36,7 +36,7 @@
                 <div>
 
                     <el-checkbox v-model="ifRecAutoLine" label="自动换行" size="small" />
-                    <el-checkbox v-model="ifAutoSave" label="自动保存" size="small" />
+                    <el-checkbox v-model="ifAutoSave" @change="handleSave()" label="自动保存" size="small" />
                 </div>
             </el-card>
             <el-card class="box-card">
@@ -53,7 +53,7 @@
                         <el-radio label="binary" size="small">BIN</el-radio>
                     </el-radio-group>
                 </div>
-                <el-divider/>
+                <el-divider />
                 <el-checkbox v-model="ifSendAutoLine" label="自动换行" size="small" />
             </el-card>
         </el-col>
@@ -64,16 +64,17 @@
                 <el-input style="white-space: pre-line;" v-model="content" :rows="10" type="textarea"
                     placeholder="接收到的内容" />
             </el-card>
-           
-                <el-input v-model="sendStr" placeholder="输入发送的内容(内容为空时将发送换行符)"   @keyup.enter="handleSend()" class="input-with-select">
-          
+
+            <el-input v-model="sendStr" placeholder="输入发送的内容(内容为空时将发送换行符)" @keyup.enter="handleSend()"
+                class="input-with-select">
+
 
                 <template #append>
                     <el-tooltip class="box-item" effect="dark" content="回车或者点击图标发送" placement="bottom">
-                    <div>
-                        <el-button type="success" round v-on:click="handleSend()" :icon="Right" />
-                    </div>
-        </el-tooltip>
+                        <div>
+                            <el-button type="success" round v-on:click="handleSend()" :icon="Right" />
+                        </div>
+                    </el-tooltip>
 
                 </template>
             </el-input>
@@ -83,8 +84,10 @@
 
 <script setup lang="ts">
 import { ElMessage } from 'element-plus';
-import { onMounted, ref, reactive, Ref } from 'vue'
+import { onMounted, ref, reactive, Ref ,onBeforeMount} from 'vue'
 import { Right } from '@element-plus/icons-vue'
+const ipc = require('electron').ipcRenderer;
+
 const ifRecAutoLine = ref(true)
 const ifSendAutoLine = ref(false)
 const ifAutoSave = ref(false)
@@ -126,17 +129,27 @@ const bauds = [
         label: "115200"
     },
 ]
+const handleSave=()=>{
+    if(ifAutoSave.value){
+        handleSaveData()
+    }
+}
+const handleSaveData= ()=> {
+                // 向IPC通道发送信号，此时主线程收到信号立即执行相对应的响应函数         
+                ipc.send('open-save-chart-dialog');
+}
 let sp: any
+
 const handleSend = () => {
-    if(sendStr.value!=""){
+    if (sendStr.value != "") {
         sp.write(sendStr.value)
-        if(ifSendAutoLine){
+        if (ifSendAutoLine) {
             sp.write("\n")
         }
         sendStr.value = ""
     }
     else
-    sp.write("\n")
+        sp.write("\n")
 }
 //TODO不到八位则行首增加0
 function strToBinary(str: string) {
@@ -160,13 +173,16 @@ const handleClick = () => {
         // 以 paused mode 监听收到的数据，需要主动读取数据
         sp.on('readable', () => {
             let str = sp.read()
+            let parseStr;
             if (str != null) {
-                if(modeRec.value!="binary")
-                    content.value += str.toString(modeRec.value)
-                else{
-                    content.value +=  strToBinary(str.toString("utf8"))
+                if (modeRec.value != "binary")
+                    parseStr = str.toString(modeRec.value)
+                else {
+                    parseStr= strToBinary(str.toString("utf8"))
                 }
-                if(ifRecAutoLine)content.value+="\n"
+                content.value+=parseStr
+                // ipcRenderer.send("asynchronous-message", parseStr+"\n");
+                if (ifRecAutoLine) content.value += "\n"
 
                 const textarea = document.getElementsByClassName('el-textarea__inner')[0];
                 textarea.scrollTop = textarea.scrollHeight;
@@ -187,8 +203,16 @@ const handleClick = () => {
         })
     }
 }
+onBeforeMount(()=>{
+    
+     ipc.on('save-finished', function (event: any, filename: any) {
+         // 当filename等于null的时候表示用户点击了取消按钮
+         // 当用户点击保存按钮的时候filename的值是对应文件的绝对路径
+         console.log(filename)
+        //  ipcRenderer.send("asynchronous-message", "传递回去ping");
+      })
+})
 onMounted(async () => {
-    // listSerialPorts()
     try {
         let ports = await serialport.SerialPort.list();
         console.log(ports); // 打印串口列表
