@@ -1,6 +1,6 @@
 <template>
     <el-row>
-        <el-col :span="8">
+        <el-col :span="8" >
             <div class="grid-content ep-bg-purple-dark" />
             <el-select v-model="value" style="width:248px" :disabled="!portsLoaded" class="m-4" placeholder="选择串口"
                 size="large">
@@ -17,7 +17,30 @@
                 </el-select>
             </el-tooltip>
             <div></div>
-            <el-button :type="buttonType" v-on:click="handleClick()">{{ buttonContent }}</el-button>
+            <el-button :type="buttonType"  v-on:click="handleClick()">{{ buttonContent }}</el-button>
+            <el-card class="box-card">
+    <template #header>
+      <div >
+        <span>接收设置</span>
+      </div>
+    </template>
+    <div class="mb-2 flex items-center text-sm">
+    <el-radio-group v-model="modeRec" class="ml-4">
+      <el-radio label="1" size="large">Option 1</el-radio>
+      <el-radio label="2" size="large">Option 2</el-radio>
+      <el-radio label="2" size="large">Option 3</el-radio>
+    </el-radio-group>
+    <el-divider />
+  </div>
+  </el-card>
+  <el-card class="box-card">
+    <template #header>
+      <div >
+        <span>发送设置</span>
+      </div>
+    </template>
+   
+  </el-card>
         </el-col>
         <el-col :span="16">
             <div class="grid-content ep-bg-purple-light" />
@@ -44,6 +67,7 @@ import { onMounted, ref, reactive, Ref } from 'vue'
 import { Right } from '@element-plus/icons-vue'
 const sendStr = ref("")
 const oports = ref()
+const modeRec=ref()
 // import {SerialPort} from "serialport"
 const buttonType = ref("default")
 const serialport = require('serialport')
