@@ -45,14 +45,14 @@
                         <span>发送设置</span>
                     </div>
                 </template>
-                <div class="mb-2 flex items-center text-sm">
+                <!-- <div class="mb-2 flex items-center text-sm">
                     <el-radio-group v-model="modeSend" class="ml-4">
                         <el-radio label="ascii" size="small">ASC II</el-radio>
                         <el-radio label="utf8" size="small">UTF8</el-radio>
                         <el-radio label="hex" size="small">HEX</el-radio>
                         <el-radio label="binary" size="small">BIN</el-radio>
                     </el-radio-group>
-                </div>
+                </div> -->
                 <el-divider />
                 <el-checkbox v-model="ifSendAutoLine" label="自动换行" size="small" />
             </el-card>
@@ -143,7 +143,7 @@ let sp: any
 const handleSend = () => {
     if (sendStr.value != "") {
         sp.write(sendStr.value)
-        if (ifSendAutoLine) {
+        if (ifSendAutoLine.value) {
             sp.write("\n")
         }
         sendStr.value = ""
@@ -154,9 +154,15 @@ const handleSend = () => {
 //TODO不到八位则行首增加0
 function strToBinary(str: string) {
     let list = str.split('');
-    return list.map((item: { charCodeAt: () => { (): any; new(): any; toString: { (arg0: number): any; new(): any; }; }; }) => {
-        return item.charCodeAt().toString(2);
+    let strNew=list.map((item: any) => {
+        let i:string= item.charCodeAt().toString(2);
+        while(i.length<8){
+            i="0"+i
+        }
+        return i
     }).join(' ');
+    return strNew
+
 }
 const handleClick = () => {
     if (buttonType.value == "default") {
@@ -182,7 +188,7 @@ const handleClick = () => {
                 }
                 content.value+=parseStr
                 // ipcRenderer.send("asynchronous-message", parseStr+"\n");
-                if (ifRecAutoLine) content.value += "\n"
+                if (ifRecAutoLine.value) content.value += "\n"
 
                 const textarea = document.getElementsByClassName('el-textarea__inner')[0];
                 textarea.scrollTop = textarea.scrollHeight;
