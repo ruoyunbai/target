@@ -34,7 +34,7 @@
                 </div>
                 <el-divider />
                 <div>
-
+                    <el-checkbox v-model="ifDraw" label="绘制图" size="small" />
                     <el-checkbox v-model="ifRecAutoLine" label="自动换行" size="small" />
                     <el-checkbox v-model="ifAutoSave" @change="handleSave()" label="自动保存" size="small" />
                 </div>
@@ -78,16 +78,26 @@
 
                 </template>
             </el-input>
+            <!-- <el-card class="box-card"> -->
+                <div id="mychartdom"  style="width:500px; height:500px">
+                </div>
+            <!-- </el-card> -->
         </el-col>
     </el-row>
 </template>
 
 <script setup lang="ts">
 import { ElMessage } from 'element-plus';
-import { onMounted, ref, reactive, Ref ,onBeforeMount} from 'vue'
+import { onMounted, ref, reactive, Ref, onBeforeMount } from 'vue'
 import { Right } from '@element-plus/icons-vue'
+import { ElNotification } from 'element-plus'
+import * as echarts from 'echarts';
+
+
+
 const ipc = require('electron').ipcRenderer;
 
+const ifDraw=ref(true)
 const ifRecAutoLine = ref(true)
 const ifSendAutoLine = ref(false)
 const ifAutoSave = ref(false)
@@ -129,14 +139,14 @@ const bauds = [
         label: "115200"
     },
 ]
-const handleSave=()=>{
-    if(ifAutoSave.value){
+const handleSave = () => {
+    if (ifAutoSave.value) {
         handleSaveData()
     }
 }
-const handleSaveData= ()=> {
-                // 向IPC通道发送信号，此时主线程收到信号立即执行相对应的响应函数         
-                ipc.send('open-save-chart-dialog');
+const handleSaveData = () => {
+    // 向IPC通道发送信号，此时主线程收到信号立即执行相对应的响应函数         
+    ipc.send('open-save-chart-dialog');
 }
 let sp: any
 
@@ -154,39 +164,90 @@ const handleSend = () => {
 //TODO不到八位则行首增加0
 function strToBinary(str: string) {
     let list = str.split('');
-    let strNew=list.map((item: any) => {
-        let i:string= item.charCodeAt().toString(2);
-        while(i.length<8){
-            i="0"+i
+    let strNew = list.map((item: any) => {
+        let i: string = item.charCodeAt().toString(2);
+        while (i.length < 8) {
+            i = "0" + i
         }
         return i
     }).join(' ');
     return strNew
 
 }
+function strTokPa(str: string):DataItem {
+  
+    let strNew =str
+     
+        while (strNew.length < 8) {
+            strNew = "0" + strNew
+        }
+
+    let kPa:number=0
+    for(let i=0;i<strNew.length;i++){
+        if(strNew[i]=="1")
+        kPa=i+1
+    }
+    now = new Date(+now + oneDay);
+    return {
+        name: now.toString(),
+        value: [
+            [now.getFullYear(), now.getMonth() + 1, now.getDate()].join('/'),
+           kPa
+        ]
+    };
+
+
+}
 const handleClick = () => {
     if (buttonType.value == "default") {
         sp = new serialport.SerialPort({ path: value.value, baudRate: parseInt(baud.value) }, (err: any) => {
             if (err) {
-                ElMessage('端口打开失败！');
+                // ElMessage('端口打开失败！');
+                ElNotification({
+                    title: 'Error',
+                    message: '端口打开失败！',
+                    type: 'error',
+                    offset: 100,
+                })
+                console.log(err)
                 return;
+            } else {
+                ElNotification({
+                    title: 'Success',
+                    type: 'success',
+                    message: '端口打开成功！',
+                    offset: 100,
+                })
+                // ElMessage('端口打开成功！');
+                buttonType.value = "success"
+                buttonContent.value = "关闭"
             }
-            ElMessage('端口打开成功！');
-            buttonType.value = "success"
-            buttonContent.value = "关闭"
         });
 
         // 以 paused mode 监听收到的数据，需要主动读取数据
         sp.on('readable', () => {
             let str = sp.read()
             let parseStr;
+            if(ifDraw.value){
+                    // data.shift();
+                data.push(strTokPa(str.toString("ascii")));
+            
+
+                 myChart.setOption<echarts.EChartsOption>({
+                     series: [
+                    {
+                        data: data
+                    }
+                ]
+                });
+            }
             if (str != null) {
                 if (modeRec.value != "binary")
                     parseStr = str.toString(modeRec.value)
                 else {
-                    parseStr= strToBinary(str.toString("utf8"))
+                    parseStr = strToBinary(str.toString("utf8"))
                 }
-                content.value+=parseStr
+                content.value += parseStr
                 // ipcRenderer.send("asynchronous-message", parseStr+"\n");
                 if (ifRecAutoLine.value) content.value += "\n"
 
@@ -209,16 +270,117 @@ const handleClick = () => {
         })
     }
 }
-onBeforeMount(()=>{
-    
-     ipc.on('save-finished', function (event: any, filename: any) {
-         // 当filename等于null的时候表示用户点击了取消按钮
-         // 当用户点击保存按钮的时候filename的值是对应文件的绝对路径
-         console.log(filename)
+onBeforeMount(() => {
+
+    ipc.on('save-finished', function (event: any, filename: any) {
+        // 当filename等于null的时候表示用户点击了取消按钮
+        // 当用户点击保存按钮的时候filename的值是对应文件的绝对路径
+        console.log(filename)
         //  ipcRenderer.send("asynchronous-message", "传递回去ping");
-      })
+    })
 })
+
+
+
+interface DataItem {
+    name: string;
+    value: [string, number];
+}
+
+function randomData(): DataItem {
+    now = new Date(+now + oneDay);
+    valueChart = Math.random() * 8;
+    return {
+        name: now.toString(),
+        value: [
+            [now.getFullYear(), now.getMonth() + 1, now.getDate()].join('/'),
+            Math.round(valueChart)
+        ]
+    };
+}
+
+let data: DataItem[] = [];
+let now = new Date(1997, 9, 3);
+let oneDay = 24 * 3600 * 1000;
+let valueChart = Math.random() * 8;
+// for (var i = 0; i < 3; i++) {
+//     data.push(randomData());
+// }
+
+const option= {
+    title: {
+        text: '冲击波压强值'
+    },
+    tooltip: {
+        trigger: 'axis',
+        formatter: function (params: any) {
+            params = params[0];
+            var date = new Date(params.name);
+            return (
+                date.getDate() +
+                '/' +
+                (date.getMonth() + 1) +
+                '/' +
+                date.getFullYear() +
+                ' : ' +
+                params.value[1]
+            );
+        },
+        axisPointer: {
+            animation:true
+        }
+    },
+    xAxis: {
+        type: 'time',
+        splitLine: {
+            show: false
+        }
+    },
+    yAxis: {
+        type: 'value',
+        boundaryGap: [0, '10%'],
+        splitLine: {
+            show: true
+        }
+    },
+    series: [
+        {
+            name: 'Fake Data',
+            type: 'line',
+            showSymbol: false,
+            data: data
+        }
+    ]
+};
+
+
+
+
+
+
+var myChart: echarts.ECharts
 onMounted(async () => {
+    // setInterval(function () {
+    //     for (var i = 0; i < 1; i++) {
+    //         // data.shift();
+    //         data.push(randomData());
+    //     }
+
+    //     myChart.setOption<echarts.EChartsOption>({
+    //         series: [
+    //             {
+    //                 data: data
+    //             }
+    //         ]
+    //     });
+    // }, 1000);
+    // 基于准备好的dom，初始化echarts实例
+    let a = document.getElementById('mychartdom')
+    if (a != null){
+        myChart = echarts.init(a);
+        myChart.setOption(option)
+        console.log("chart inited!")
+    }
     try {
         let ports = await serialport.SerialPort.list();
         console.log(ports); // 打印串口列表

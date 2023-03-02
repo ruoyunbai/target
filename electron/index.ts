@@ -3,6 +3,7 @@ import path from "path";
 // 1. 引入对话框与IPC通信模块
 const ipc = require('electron').ipcMain
 const dialog = require('electron').dialog
+const fs = require('fs')
 let filePath=""
 ipc.on('open-save-chart-dialog', async function (event) {
   let filename=await dialog.showSaveDialog({
@@ -25,10 +26,10 @@ ipc.on('open-save-chart-dialog', async function (event) {
       filePath=filename.filePath
 
 })
-
-ipcMain.on('asynchronous-message', function(event, arg) {
+// https://www.cnblogs.com/wsm777/p/13631547.html
+ipc.on('asynchronous-message', function(event, arg) {
   // arg是从渲染进程返回来的数据
-fs.writeFile(path.join(__dirname, "../renderer/data/data.json"),JSON.stringify(arg), "utf8"，(err)=>{
+  fs.writeFile(path.join(__dirname, "../renderer/data/data.json"),JSON.stringify(arg), "utf8",(err)=>{
 	if(err){
 	 	event.sender.send('asynchronous-reply', "写入失败");
 	}else {
