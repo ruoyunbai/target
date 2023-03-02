@@ -177,12 +177,11 @@ function strToBinary(str: string) {
 function strTokPa(str: string):DataItem {
   
     let strNew =str
-     
-        while (strNew.length < 8) {
-            strNew = "0" + strNew
-        }
-
-    let kPa:number=0
+    while (strNew.length < 8) {
+        strNew = "0" + strNew
+    }
+ 
+    let kPa:number=0 
     for(let i=0;i<strNew.length;i++){
         if(strNew[i]=="1")
         kPa=i+1
@@ -308,6 +307,14 @@ let valueChart = Math.random() * 8;
 // }
 
 const option= {
+    dataZoom: [
+        {
+            id: 'dataZoomX',
+            type: 'slider',
+            xAxisIndex: [0],
+            filterMode: 'filter'
+        }
+    ],
     title: {
         text: '冲击波压强值'
     },
