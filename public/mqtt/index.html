@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8" />
+  <!-- https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'" />
+  <meta http-equiv="X-Content-Security-Policy" content="default-src 'self'; script-src 'self'" />
+  <title>MQTT Client GUI</title>
+</head>
+
+<body>
+  <div id = 'server'>
+  <table>
+    <tr>
+      <td>
+        Ip:
+      </td>
+      <td>
+        <input id='ipOftheServe' rows="1" cols="40" placeholder="请输入目标ip">
+        </input>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        Port:
+      </td>
+      <td>
+        <input id='portOftheServe' rows="1" cols="40" placeholder="请输入目标端口">
+        </input>
+      </td>
+
+    </tr>
+    <tr>
+      <td>
+        User:
+      </td>
+      <td>
+        <input id='userOflocal' rows="1" cols="40" placeholder="请输入用户id">
+        </input>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        Password:
+      </td>
+      <td>
+        <input id='passwordOfuser' type="password" rows="1" cols="40" placeholder="请输入用户密码">
+        </input>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        State:</td>
+      <td>
+        <div id='stateOfconnect' >Disconnect
+        </div>
+      </td>
+    </tr>
+  </table>
+
+  <button id="ConnectServer" >Connect
+  </button>
+  <button id="DisconnectServer">Disconnect
+  </button>
+  <table>
+    <tr>
+      <td>
+        Topic:
+      </td>
+      <td>
+        <input id='topicpublish' rows="1" cols="40">
+
+        </input>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        QoS:
+      </td>
+      <td>
+        <select id="qosType">
+          <option>
+            0
+          </option>
+          <option>
+            1
+          </option>
+          <option>
+            2
+          </option>
+        </select>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        Message:
+      </td>
+      <td>
+        <input id='messagePub' rows="1" cols="40">
+
+        </input>
+      </td>
+    </tr>
+  </table>
+  <button id="Publish">Publish</button>
+  <table>
+    <tr>
+
+      <td>
+        Topic:
+      </td>
+      <td>
+        <input id='topicTarget' rows="1" cols="40">
+
+        </input>
+      </td>
+    </tr>
+
+  </table>
+
+  <button id="Subscribe">Subscribe
+  </button>
+  <button id="Unsubscribe">Unsubscribe
+  </button>
+
+  <table>
+    <tr>
+      <td>
+        Log:
+      </td>
+      <td>
+        <textarea id='log' rows="10" cols="40">
+      </textarea>
+      </td>
+    </tr>
+  </table>
+  </div>
+  <div>
+    请选择计算内容
+  </div>
+  <select id="Pageswitch">
+    <option value =0>
+      Velocity
+    </option>
+    <option value =1>
+      Pressure
+    </option>
+  </select>
+
+  <div id="Velocity">
+  <table>
+    <tr>
+      <td>
+        当前计算距离:
+      </td>
+      <td>
+        <input id='Distance' rows="1" cols="40">
+        </input>
+      </td>
+      <td>
+        <button id="ComputeV">计算速度
+        </button>
+      </td>
+    </tr>
+    <tr>
+      <td>计算速度:
+      </td>
+      <td>
+        <div id = 'vTemp'>0.0</div>
+      </td>
+      <td>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        当前计算类型:
+      </td>
+      <td>
+        <select id='DataclassV' rows="1" cols="40">
+        </select>
+      </td>
+      <td></td>
+      </tr> 
+      <tr>
+        <td>
+        <input id='classnameV' rows="1" cols="40">
+        </input>
+        </td>
+      <td>
+        <button id="NewclassV">新建数据类
+        </button>
+      </td>
+      <td>
+      </td>
+    </tr>
+  </table>
+
+  <table border ="2" id="Vlist" > 
+    <caption>历史速度记录</caption>
+    <thead>
+    <tr>
+      <td>序号
+      </td>
+      <td>类型
+      </td>
+      <td>时间
+      </td>
+      <td>距离
+      </td>
+      <td>速度
+      </td>
+    </tr>
+  </thead>
+  <tbody>
+  </tbody>
+  </table>
+  <br>
+  <table>
+    <tr>
+      <td>
+          当前类型的历史平均速度: 
+      </td>
+      <td>
+        <div id='AverageV' >0.0
+        </div>
+      </td>
+    </tr>
+  </table>  
+  </div>
+
+  <div id="Pressure" >
+    <table border ="2">
+      <caption>各传感器数目</caption>
+      <tr>
+        <td>
+          传感器类型
+        </td>
+        <td>
+          传感器总数(手动填写)
+        </td>
+        <td>
+          已接受传感器数目
+        </td>
+        <td>
+          达标率
+        </td>
+      </tr>
+
+      <tr>
+        <td>
+          35KP
+        </td>
+        <td>
+          <input id='s35KP' rows="1" cols="10">
+          </input>
+        </td>
+        <td>
+          <input id='rec35KP' rows="1" cols="10">
+          </input>
+        </td>
+        <td>
+          <div  id = 'rate35KP'>0.0
+          </div>
+        </td>
+      </tr>
+
+      <tr>
+        <td>
+          50KP
+        </td>
+        <td>
+          <input id= 's50KP' rows="1" cols="10">
+          </input>
+        </td>
+        <td>
+          <input id='rec50KP' rows="1" cols="10">
+          </input>
+        </td>
+        <td>
+          <div  id = 'rate50KP'>0.0
+          </div>
+        </td>
+      </tr>
+
+      <tr>
+        <td>
+          100KP
+        </td>
+        <td>
+          <input id='s100KP' rows="1" cols="10">
+          </input>
+        </td>
+        <td>
+          <input id='rec100KP' rows="1" cols="10">
+          </input>
+        </td>
+        <td>
+          <div  id = 'rate100KP'>
+            0.0
+          </div>
+        </td>
+      </tr>
+    </table>
+    <table>
+      <tr>
+        <td>
+          <button id = "ComputeP">计算达标率            
+          </button>
+        </td>
+        <td>
+          综合达标率:
+        </td>
+        <td>
+          <div id = "synthesisP">0.0
+          </div>
+        </td>
+      </tr>
+      </table>
+      <table>
+      <tr>
+        <td>
+          当前计算类型:
+        </td>
+        <td>
+          <select id='DataclassP' rows="1" cols="40">
+          </select>
+        </td>
+        <td></td>
+      </tr>
+      <tr>
+        <td>
+          <input id='classnameP' rows="1" cols="40">
+          </input>
+        </td> 
+        <td>
+          <button id="NewclassP">新建数据类
+          </button>
+        </td>
+        <td></td>
+      </tr>
+  </table>
+
+
+    <table border ="2" id="Plist" > 
+      <caption>历史速度记录</caption>
+      <thead>
+      <tr>
+        <td>序号
+        </td>
+        <td>类型
+        </td>
+        <td>35达标率
+        </td>
+        <td>50达标率
+        </td>
+        <td>100达标率
+        </td>
+        <td>综合达标率
+        </td>
+      </tr>
+    </thead>
+    <tbody>
+    </tbody>
+    </table>
+    <br>
+    <table>
+      <tr>
+        <td>
+          当前类型的历史平均达标率: 
+        </td>
+        <td>
+          <div id='AverageP' >0.0
+          </div>
+        </td>
+      </tr>
+    </table>  
+  </div>
+  <br>
+  <div>计算完请点击以下按钮来保存当前实验数据</div>
+  <button id = 'save'>保存数据</button>
+
+
+  <script src="index.js"></script>
+</body>
+</html>
