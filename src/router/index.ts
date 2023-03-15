@@ -2,6 +2,10 @@ import {RouteRecord, createRouter, createWebHistory,RouteRecordRaw} from 'vue-ro
 
 const routes:Array<RouteRecordRaw>=[
     {
+        path:"/",
+        component:()=>import('../components/Serial.vue')
+    },
+    {
         path:"/serial",
         component:()=>import('../components/Serial.vue')
     },

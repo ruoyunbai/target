@@ -97,7 +97,7 @@ import * as echarts from 'echarts';
 
 const ipc = require('electron').ipcRenderer;
 
-const ifDraw=ref(true)
+const ifDraw=ref(false)
 const ifRecAutoLine = ref(true)
 const ifSendAutoLine = ref(false)
 const ifAutoSave = ref(false)
@@ -147,6 +147,7 @@ const handleSave = () => {
 const handleSaveData = () => {
     // 向IPC通道发送信号，此时主线程收到信号立即执行相对应的响应函数         
     ipc.send('open-save-chart-dialog');
+
 }
 let sp: any
 
@@ -275,7 +276,16 @@ onBeforeMount(() => {
         // 当filename等于null的时候表示用户点击了取消按钮
         // 当用户点击保存按钮的时候filename的值是对应文件的绝对路径
         console.log(filename)
-        //  ipcRenderer.send("asynchronous-message", "传递回去ping");
+        let data="123145"
+        ipc.send("asynchronous-message", data);
+
+        //  
+    })
+    ipc.on('asynchronous-reply', function (event: any, filename: any) {
+        
+        console.log(filename)
+
+        //  
     })
 })
 
