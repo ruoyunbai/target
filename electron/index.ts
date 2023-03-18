@@ -72,25 +72,27 @@ const createWindow = () => {
     // 生产环境
     win.loadFile(path.join(__dirname, "../dist/index.html"));
   }
-  const winMqtt = new BrowserWindow({
-    width: 800,
-    height: 600,
-    webPreferences:{
-      preload:path.join(__dirname,'preload.js'),
-      nodeIntegration: true,//设置开启nodejs环境
-      // enableRemoteModule: true, //enableRemoteModule保证renderer.js可以可以正常require('electron').remote
-      contextIsolation:false
-    }
-  })
-  // winMqtt.webContents.openDevTools()
-  if (process.env.NODE_ENV === 'development') {
-    // 开发环境
-  winMqtt.loadFile('public/mqtt/index.html')
-  } else {
-    // 生产环境
-    winMqtt.loadFile(path.join(__dirname, "../dist/mqtt/index.html"))
+  win.setPosition(0,0)
+  // const winMqtt = new BrowserWindow({
+  //   width: 600,
+  //   height: 600,
+  //   webPreferences:{
+  //     preload:path.join(__dirname,'preload.js'),
+  //     nodeIntegration: true,//设置开启nodejs环境
+  //     // enableRemoteModule: true, //enableRemoteModule保证renderer.js可以可以正常require('electron').remote
+  //     contextIsolation:false
+  //   }
+  // })
+  // winMqtt.setPosition(780,0)
+  // // winMqtt.webContents.openDevTools()
+  // if (process.env.NODE_ENV === 'development') {
+  //   // 开发环境
+  // winMqtt.loadFile('public/mqtt/index.html')
+  // } else {
+  //   // 生产环境
+  //   winMqtt.loadFile(path.join(__dirname, "../dist/mqtt/index.html"))
 
-  }
+  // }
 };
 
 app.whenReady().then(createWindow)

@@ -25,6 +25,8 @@
                     </div>
                 </template>
                 <div class="mb-2 flex items-center text-sm">
+                    <el-text class="mx-1" type="success">编码</el-text>
+                    <div></div>
                     <el-radio-group v-model="modeRec" class="ml-4">
                         <el-radio label="ascii" size="small">ASC II</el-radio>
                         <el-radio label="utf8" size="small">UTF8</el-radio>
@@ -34,7 +36,18 @@
                 </div>
                 <el-divider />
                 <div>
-                    <el-checkbox v-model="ifDraw" label="绘制图" size="small" />
+                    <el-text class="mx-1" type="success">功能选择</el-text>
+                    <div></div>
+                    <el-radio-group v-model="calcMode" class="ml-4">
+                        <el-radio-button label="speed" size="small" >计算速度</el-radio-button>
+                        <el-radio-button label="press" size="small">计算压力</el-radio-button>
+                        <el-radio-button label="pic" size="small">绘制图</el-radio-button>
+                    </el-radio-group>
+                    <!-- <el-checkbox v-model="ifSpeed" label="计算速度" size="small" />
+                    <el-checkbox v-model="ifPressure" label="计算压力" size="small" />
+                    
+                    <el-checkbox v-model="ifDraw" label="绘制图" size="small" /> -->
+                    <el-divider></el-divider>
                     <el-checkbox v-model="ifRecAutoLine" label="自动换行" size="small" />
                     <el-checkbox v-model="ifAutoSave" @change="handleSave()" label="自动保存" size="small" />
                 </div>
@@ -78,26 +91,155 @@
 
                 </template>
             </el-input>
-            <!-- <el-card class="box-card"> -->
-                <div id="mychartdom"  style="width:500px; height:500px">
+            <transition-group name="el-fade-in-linear">
+                <!-- <el-card class="box-card"> -->
+                <div id="mychartdom" v-show="ifDraw" style="width:500px; height:500px">
                 </div>
-            <!-- </el-card> -->
+                <!-- </el-card> -->
+                <el-card v-if="ifSpeed" class="box-card">
+                    <el-row>
+                        <el-col :span="12">
+                            <el-form-item label="输入距离">
+                                <el-input v-model="distance" placeholder="距离" />
+                            </el-form-item></el-col>
+                        <el-col :span="2">(m)</el-col>
+                    </el-row>
+                    <el-row><el-col :span="16">
+                            <el-form-item label="选择类">
+                                <el-select @change="handleSpeedClassChange()" v-model="speedClass" filterable allow-create
+                                    :reserve-keyword="false" placeholder="">
+
+                                    <el-option v-for="item in speedClasses" :key="item.value" :label="item.label"
+                                        :value="item.value" />
+                                </el-select>
+                            </el-form-item>
+                        </el-col></el-row>
+                    <el-row><el-col :span="16">
+                            <el-form-item label="当前速度">
+                                {{ speedData.currentSpeed}}
+                            </el-form-item>
+                        </el-col>
+                    </el-row>
+                    <!-- <el-row><el-col :span="16">
+                            <el-form-item label="选择类">
+
+                            </el-form-item>
+                        </el-col>
+                    </el-row> -->
+                    <el-row><el-col :span="16">
+                            <el-form-item label="历史数据   ">
+                                <el-checkbox v-model="ifSpeedScroll" label="自动滚动" size="small" />
+                            </el-form-item>
+                        </el-col>
+                    </el-row>
+                    <el-row><el-col :span="24">
+                            <!-- <el-form-item label="历史数据"> -->
+                                <el-table ref="speedTable" :data="speedData.data" height="250" style="width: 100%" >
+                                    <el-table-column prop="id" label="序号"  />
+                                    <el-table-column prop="type" label="类型"  />
+                                    <el-table-column prop="distance" label="距离" />
+                                    <el-table-column prop="time" label="时间" />
+                                    <el-table-column prop="speed" label="速度" />
+                                </el-table>
+                            <!-- </el-form-item> -->
+                        </el-col>
+                    </el-row>
+                </el-card>
+                <el-card v-if="ifPressure" class="box-card">
+                    <el-row><el-col :span="16">
+                            <el-form-item label="选择类">
+                                <el-select @change="handleSpeedClassChange()" v-model="speedClass" filterable allow-create
+                                    :reserve-keyword="false" placeholder="">
+
+                                    <el-option v-for="item in speedClasses" :key="item.value" :label="item.label"
+                                        :value="item.value" />
+                                </el-select>
+                            </el-form-item>
+                        </el-col></el-row>
+                        <el-divider />
+                        <el-row><el-col :span="16">
+                            <el-form-item label="传感器数目">
+
+                            </el-form-item>
+                        </el-col>
+                    </el-row>
+                    <el-row><el-col :span="24">
+                        <el-row>
+                            <el-col :span="4"><div style="background-color:aquamarine" class="grid-content ep-bg-purple" >传感器类型</div></el-col>
+                            <el-col :span="8"><div  style="background-color:azure" class="grid-content ep-bg-purple">传感器总数</div></el-col>
+                            <el-col :span="8"><div style="background-color:aquamarine" class="grid-content ep-bg-purple" >已接收传感器总数</div></el-col>
+                            <el-col :span="4"><div  style="background-color:azure" class="grid-content ep-bg-purple">达标率</div></el-col>
+                        </el-row>
+                        <el-row>
+                            <el-col :span="4"><div  class="simpleUnit">35KP</div></el-col>
+                            <el-col :span="8"><div  class="simpleUnit" >  <el-input-number v-model="pressData.cnt35" size="small" /></div></el-col>
+                            <el-col :span="8"><div  class="simpleUnit" >{{ pressData.ok35 }}</div></el-col>
+                            <el-col :span="4"><div  class="simpleUnit">{{ pressData.ok35/pressData.cnt35*100 }}%</div></el-col>
+                        </el-row>
+                        <div style="height:1px"></div>
+
+                        <el-row>
+                            <el-col :span="4"><div  class="simpleUnit">50KP</div></el-col>
+                            <el-col :span="8"><div  class="simpleUnit" >  <el-input-number v-model="pressData.cnt50" size="small" /></div></el-col>
+                            <el-col :span="8"><div  class="simpleUnit" >{{ pressData.ok100 }}</div></el-col>
+                            <el-col :span="4"><div  class="simpleUnit">{{ pressData.ok50/pressData.cnt50*100 }}%</div></el-col>
+                        </el-row>
+                        <div style="height:1px"></div>
+                        <el-row>
+                            <el-col :span="4"><div  class="simpleUnit">100KP</div></el-col>
+                            <el-col :span="8"><div  class="simpleUnit" >  <el-input-number v-model="pressData.cnt100" size="small" /></div></el-col>
+                            <el-col :span="8"><div  class="simpleUnit" >{{ pressData.ok100 }}</div></el-col>
+                            <el-col :span="4"><div  class="simpleUnit">{{ pressData.ok100/pressData.cnt100*100 }}%</div></el-col>
+                        </el-row>
+                        </el-col>
+                    </el-row>
+                    <div style="height:15px"></div>
+               
+                    <!-- <el-row><el-col :span="16">
+                           
+                        </el-col>
+                    </el-row> -->
+                    <el-divider />
+                    <el-row><el-col :span="24">
+                        <el-form-item label="历史数据   ">
+                            <el-checkbox v-model="ifPressScroll" label="自动滚动" size="small" />
+
+</el-form-item>
+                            <!-- <el-form-item label="历史数据"> -->
+                                <el-table :data="pressData.data" style="width: 100%">
+                                    <el-table-column prop="id" label="序号"  />
+                                    <el-table-column prop="type" label="类型"  />
+                                    <el-table-column prop="per35" label="35达标率" />
+                                    <el-table-column prop="per50" label="50达标率" />
+                                    <el-table-column prop="per100" label="100达标率" />
+                                    <el-table-column prop="perAll" label="综合达标率" />
+
+                                </el-table>
+                            <!-- </el-form-item> -->
+                        </el-col>
+                    </el-row>
+                </el-card>
+            </transition-group>
         </el-col>
     </el-row>
 </template>
 
 <script setup lang="ts">
-import { ElMessage } from 'element-plus';
-import { onMounted, ref, reactive, Ref, onBeforeMount } from 'vue'
+import { ElMessage,ElTable } from 'element-plus';
+import { onMounted, ref, reactive, Ref, onBeforeMount,watch,computed } from 'vue'
 import { Right } from '@element-plus/icons-vue'
 import { ElNotification } from 'element-plus'
 import * as echarts from 'echarts';
-
-
-
+import { forEach } from 'lodash';
+import internal from 'stream';
+const calcMode=ref()
+const distance = ref()
+const ifSpeedScroll=ref(true)
+const ifPressScroll=ref(true)
 const ipc = require('electron').ipcRenderer;
-
-const ifDraw=ref(false)
+const ifSpeed = ref(false)
+const ifPressure = ref(false)
+const ifDraw = ref(false)
 const ifRecAutoLine = ref(true)
 const ifSendAutoLine = ref(false)
 const ifAutoSave = ref(false)
@@ -116,6 +258,45 @@ const buttonContent = ref("启动")
 const options: any = reactive([
 
 ])
+const speedClass = ref("default")
+const speedClasses = reactive([
+    {
+        value: "default",
+        label: "默认",
+    }
+])
+const speedTable = ref<InstanceType<typeof ElTable>>()
+// const speedTable=ref()
+type speeddata={
+    id:number,
+    currentSpeed:number,
+    data:any[]
+}
+const speedData:speeddata=reactive({
+    id:0,
+    currentSpeed:0,
+    data:[]
+})
+type pressdata={
+    id:number,
+    cnt35:number,
+    ok35:number,
+    cnt50:number,
+    ok50:number,
+    cnt100:number,
+    ok100:number,
+    data:any[]
+}
+const pressData:pressdata=reactive({
+    id:0,
+    cnt35:0,
+    ok35:0,
+    cnt50:0,
+    ok50:0,
+    cnt100:0,
+    ok100:0,
+    data:[]
+})
 const bauds = [
     {
         value: "9600",
@@ -139,6 +320,44 @@ const bauds = [
         label: "115200"
     },
 ]
+// computed()
+watch(
+    calcMode,
+    (value, oldValue) => {
+      console.log(value, oldValue)
+    if(calcMode.value=="speed"){
+        ifSpeed.value=true
+        ifDraw.value=false
+        ifPressure.value=false
+    }
+    if(calcMode.value=="press"){
+        ifSpeed.value=false
+        ifDraw.value=false
+        ifPressure.value=true
+    }
+    if(calcMode.value=="pic"){
+        ifSpeed.value=false
+        ifDraw.value=true
+        ifPressure.value=false
+    }
+    }
+  )
+const handleSpeedClassChange = () => {
+    // console.log(speedClass.value)
+    let exist = false
+    speedClasses.forEach((item) => {
+        if (item.value == speedClass.value) {
+            exist = true
+        }
+    })
+    if (!exist) {
+        speedClasses.push({
+            label: speedClass.value,
+            value: speedClass.value
+          
+        })
+    }
+}
 const handleSave = () => {
     if (ifAutoSave.value) {
         handleSaveData()
@@ -175,24 +394,24 @@ function strToBinary(str: string) {
     return strNew
 
 }
-function strTokPa(str: string):DataItem {
-  
-    let strNew =str
+function strTokPa(str: string): DataItem {
+
+    let strNew = str
     while (strNew.length < 8) {
         strNew = "0" + strNew
     }
- 
-    let kPa:number=0 
-    for(let i=0;i<strNew.length;i++){
-        if(strNew[i]=="1")
-        kPa=i+1
+
+    let kPa: number = 0
+    for (let i = 0; i < strNew.length; i++) {
+        if (strNew[i] == "1")
+            kPa = i + 1
     }
     now = new Date(+now + oneDay);
     return {
         name: now.toString(),
         value: [
             [now.getFullYear(), now.getMonth() + 1, now.getDate()].join('/'),
-           kPa
+            kPa
         ]
     };
 
@@ -228,17 +447,36 @@ const handleClick = () => {
         sp.on('readable', () => {
             let str = sp.read()
             let parseStr;
-            if(ifDraw.value){
-                    // data.shift();
+            if(ifSpeed.value){
+                let time=Number(str.toString("ascii"))
+                speedData.id++
+                speedData.data.push({
+                    id:speedData.id,
+                    type:speedClass.value,
+                    distance:distance.value,
+                    time:time,
+                    speed:(distance.value*1000)/time,
+                })
+                speedData.currentSpeed=(distance.value*1000)/time
+                if(speedTable.value!=null&& ifSpeedScroll.value){
+                    // speedTable.value.scrollTo
+                speedTable.value.scrollTo({
+                    left:0,
+                    top:60*speedData.id,
+                    behavior: 'smooth'
+                })}
+            }
+            if (ifDraw.value) {
+                // data.shift();
                 data.push(strTokPa(str.toString("ascii")));
-            
 
-                 myChart.setOption<echarts.EChartsOption>({
-                     series: [
-                    {
-                        data: data
-                    }
-                ]
+
+                myChart.setOption<echarts.EChartsOption>({
+                    series: [
+                        {
+                            data: data
+                        }
+                    ]
                 });
             }
             if (str != null) {
@@ -276,13 +514,13 @@ onBeforeMount(() => {
         // 当filename等于null的时候表示用户点击了取消按钮
         // 当用户点击保存按钮的时候filename的值是对应文件的绝对路径
         console.log(filename)
-        let data="123145"
+        let data = "123145"
         ipc.send("asynchronous-message", data);
 
         //  
     })
     ipc.on('asynchronous-reply', function (event: any, filename: any) {
-        
+
         console.log(filename)
 
         //  
@@ -316,7 +554,7 @@ let valueChart = Math.random() * 8;
 //     data.push(randomData());
 // }
 
-const option= {
+const option = {
     dataZoom: [
         {
             id: 'dataZoomX',
@@ -344,7 +582,7 @@ const option= {
             );
         },
         axisPointer: {
-            animation:true
+            animation: true
         }
     },
     xAxis: {
@@ -393,7 +631,7 @@ onMounted(async () => {
     // }, 1000);
     // 基于准备好的dom，初始化echarts实例
     let a = document.getElementById('mychartdom')
-    if (a != null){
+    if (a != null) {
         myChart = echarts.init(a);
         myChart.setOption(option)
         console.log("chart inited!")
@@ -419,3 +657,24 @@ onMounted(async () => {
 })
 
 </script>
+<style>
+/* .el-row {
+  margin-bottom: 20px;
+} */
+.el-row:last-child {
+  margin-bottom: 0;
+}
+.el-col {
+  border-radius: 4px;
+}
+
+.grid-content {
+    text-align: center;
+ line-height:36px;
+  border-radius: 4px;
+  min-height: 36px;
+}
+.simpleUnit{
+    border:solid 1px rgb(177, 244, 205);
+}
+</style>
