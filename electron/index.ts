@@ -27,28 +27,29 @@ ipc.on('open-save-chart-dialog', async function (event) {
 
 })
 // https://www.cnblogs.com/wsm777/p/13631547.html
-ipc.on('asynchronous-message', function (event, arg) {
+ipc.on('save-message', function (event, arg) {
   // arg是从渲染进程返回来的数据
   // fs.
-  let fileName = path.join(__dirname, "../renderer/data/data.json")
-  fs.access(fileName, fs.constants.F_OK, err => {
-    if (err) {
-      event.sender.send('asynchronous-reply', "创建失败" + err);
-    } else {
-      fs.writeFile(fileName, arg, "utf8", (err) => {
+  // let fileName = path.join(__dirname, "../renderer/data/data.json")
+  let fileName=filePath
+  // fs.access(fileName, fs.constants.F_OK, err => {
+  //   if (err) {
+  //     event.sender.send('save-reply', "创建失败" + err);
+  //   } else {
+      fs.writeFile(fileName, arg, {encoding: 'utf8', flag: 'a'}, (err) => {
         if (err) {
 
-          event.sender.send('asynchronous-reply', "写入失败" + err);
+          event.sender.send('save-reply', "写入失败" + err);
         } else {
-          event.sender.send('asynchronous-reply', "写入成功");
+          event.sender.send('save-reply', "写入成功");
         }
       }
       )
-    }
-    // 通过event.sender.send给渲染进程传递数据
+  //   }
+  //   // 通过event.sender.send给渲染进程传递数据
 
-  }
-  )
+  // }
+  // )
   // 2.定义IPC主进程响应函数
 })
 const createWindow = () => {

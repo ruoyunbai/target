@@ -39,7 +39,7 @@
                     <el-text class="mx-1" type="success">功能选择</el-text>
                     <div></div>
                     <el-radio-group v-model="calcMode" class="ml-4">
-                        <el-radio-button label="speed" size="small" >计算速度</el-radio-button>
+                        <el-radio-button label="speed" size="small">计算速度</el-radio-button>
                         <el-radio-button label="press" size="small">计算压力</el-radio-button>
                         <el-radio-button label="pic" size="small">绘制图</el-radio-button>
                     </el-radio-group>
@@ -116,7 +116,7 @@
                         </el-col></el-row>
                     <el-row><el-col :span="16">
                             <el-form-item label="当前速度">
-                                {{ speedData.currentSpeed}}
+                                {{ speedData.currentSpeed }}
                             </el-form-item>
                         </el-col>
                     </el-row>
@@ -134,13 +134,13 @@
                     </el-row>
                     <el-row><el-col :span="24">
                             <!-- <el-form-item label="历史数据"> -->
-                                <el-table ref="speedTable" :data="speedData.data" height="250" style="width: 100%" >
-                                    <el-table-column prop="id" label="序号"  />
-                                    <el-table-column prop="type" label="类型"  />
-                                    <el-table-column prop="distance" label="距离" />
-                                    <el-table-column prop="time" label="时间" />
-                                    <el-table-column prop="speed" label="速度" />
-                                </el-table>
+                            <el-table ref="speedTable" :data="speedData.data" height="250" style="width: 100%">
+                                <el-table-column prop="id" label="序号" />
+                                <el-table-column prop="type" label="类型" />
+                                <el-table-column prop="distance" label="距离" />
+                                <el-table-column prop="time" label="时间" />
+                                <el-table-column prop="speed" label="速度" />
+                            </el-table>
                             <!-- </el-form-item> -->
                         </el-col>
                     </el-row>
@@ -156,65 +156,101 @@
                                 </el-select>
                             </el-form-item>
                         </el-col></el-row>
-                        <el-divider />
-                        <el-row><el-col :span="16">
+                    <el-divider />
+                    <el-row><el-col :span="16">
                             <el-form-item label="传感器数目">
 
                             </el-form-item>
                         </el-col>
                     </el-row>
                     <el-row><el-col :span="24">
-                        <el-row>
-                            <el-col :span="4"><div style="background-color:aquamarine" class="grid-content ep-bg-purple" >传感器类型</div></el-col>
-                            <el-col :span="8"><div  style="background-color:azure" class="grid-content ep-bg-purple">传感器总数</div></el-col>
-                            <el-col :span="8"><div style="background-color:aquamarine" class="grid-content ep-bg-purple" >已接收传感器总数</div></el-col>
-                            <el-col :span="4"><div  style="background-color:azure" class="grid-content ep-bg-purple">达标率</div></el-col>
-                        </el-row>
-                        <el-row>
-                            <el-col :span="4"><div  class="simpleUnit">35KP</div></el-col>
-                            <el-col :span="8"><div  class="simpleUnit" >  <el-input-number v-model="pressData.cnt35" size="small" /></div></el-col>
-                            <el-col :span="8"><div  class="simpleUnit" >{{ pressData.ok35 }}</div></el-col>
-                            <el-col :span="4"><div  class="simpleUnit">{{ pressData.ok35/pressData.cnt35*100 }}%</div></el-col>
-                        </el-row>
-                        <div style="height:1px"></div>
+                            <el-row>
+                                <el-col :span="4">
+                                    <div style="background-color:aquamarine" class="grid-content ep-bg-purple">传感器类型</div>
+                                </el-col>
+                                <el-col :span="8">
+                                    <div style="background-color:azure" class="grid-content ep-bg-purple">传感器总数</div>
+                                </el-col>
+                                <el-col :span="8">
+                                    <div style="background-color:aquamarine" class="grid-content ep-bg-purple">已接收传感器总数
+                                    </div>
+                                </el-col>
+                                <el-col :span="4">
+                                    <div style="background-color:azure" class="grid-content ep-bg-purple">达标率</div>
+                                </el-col>
+                            </el-row>
+                            <el-row>
+                                <el-col :span="4">
+                                    <div class="simpleUnit">35KP</div>
+                                </el-col>
+                                <el-col :span="8">
+                                    <div class="simpleUnit"> <el-input-number v-model="pressData.cnt35" size="small" />
+                                    </div>
+                                </el-col>
+                                <el-col :span="8">
+                                    <div class="simpleUnit">{{ pressData.ok35 }}</div>
+                                </el-col>
+                                <el-col :span="4">
+                                    <div class="simpleUnit">{{ pressData.ok35 / pressData.cnt35 * 100 }}%</div>
+                                </el-col>
+                            </el-row>
+                            <div style="height:1px"></div>
 
-                        <el-row>
-                            <el-col :span="4"><div  class="simpleUnit">50KP</div></el-col>
-                            <el-col :span="8"><div  class="simpleUnit" >  <el-input-number v-model="pressData.cnt50" size="small" /></div></el-col>
-                            <el-col :span="8"><div  class="simpleUnit" >{{ pressData.ok100 }}</div></el-col>
-                            <el-col :span="4"><div  class="simpleUnit">{{ pressData.ok50/pressData.cnt50*100 }}%</div></el-col>
-                        </el-row>
-                        <div style="height:1px"></div>
-                        <el-row>
-                            <el-col :span="4"><div  class="simpleUnit">100KP</div></el-col>
-                            <el-col :span="8"><div  class="simpleUnit" >  <el-input-number v-model="pressData.cnt100" size="small" /></div></el-col>
-                            <el-col :span="8"><div  class="simpleUnit" >{{ pressData.ok100 }}</div></el-col>
-                            <el-col :span="4"><div  class="simpleUnit">{{ pressData.ok100/pressData.cnt100*100 }}%</div></el-col>
-                        </el-row>
+                            <el-row>
+                                <el-col :span="4">
+                                    <div class="simpleUnit">50KP</div>
+                                </el-col>
+                                <el-col :span="8">
+                                    <div class="simpleUnit"> <el-input-number v-model="pressData.cnt50" size="small" />
+                                    </div>
+                                </el-col>
+                                <el-col :span="8">
+                                    <div class="simpleUnit">{{ pressData.ok100 }}</div>
+                                </el-col>
+                                <el-col :span="4">
+                                    <div class="simpleUnit">{{ pressData.ok50 / pressData.cnt50 * 100 }}%</div>
+                                </el-col>
+                            </el-row>
+                            <div style="height:1px"></div>
+                            <el-row>
+                                <el-col :span="4">
+                                    <div class="simpleUnit">100KP</div>
+                                </el-col>
+                                <el-col :span="8">
+                                    <div class="simpleUnit"> <el-input-number v-model="pressData.cnt100" size="small" />
+                                    </div>
+                                </el-col>
+                                <el-col :span="8">
+                                    <div class="simpleUnit">{{ pressData.ok100 }}</div>
+                                </el-col>
+                                <el-col :span="4">
+                                    <div class="simpleUnit">{{ pressData.ok100 / pressData.cnt100 * 100 }}%</div>
+                                </el-col>
+                            </el-row>
                         </el-col>
                     </el-row>
                     <div style="height:15px"></div>
-               
+
                     <!-- <el-row><el-col :span="16">
                            
                         </el-col>
                     </el-row> -->
                     <el-divider />
                     <el-row><el-col :span="24">
-                        <el-form-item label="历史数据   ">
-                            <el-checkbox v-model="ifPressScroll" label="自动滚动" size="small" />
+                            <el-form-item label="历史数据   ">
+                                <el-checkbox v-model="ifPressScroll" label="自动滚动" size="small" />
 
-</el-form-item>
+                            </el-form-item>
                             <!-- <el-form-item label="历史数据"> -->
-                                <el-table :data="pressData.data" style="width: 100%">
-                                    <el-table-column prop="id" label="序号"  />
-                                    <el-table-column prop="type" label="类型"  />
-                                    <el-table-column prop="per35" label="35达标率" />
-                                    <el-table-column prop="per50" label="50达标率" />
-                                    <el-table-column prop="per100" label="100达标率" />
-                                    <el-table-column prop="perAll" label="综合达标率" />
+                            <el-table :data="pressData.data" style="width: 100%">
+                                <el-table-column prop="id" label="序号" />
+                                <el-table-column prop="type" label="类型" />
+                                <el-table-column prop="per35" label="35达标率" />
+                                <el-table-column prop="per50" label="50达标率" />
+                                <el-table-column prop="per100" label="100达标率" />
+                                <el-table-column prop="perAll" label="综合达标率" />
 
-                                </el-table>
+                            </el-table>
                             <!-- </el-form-item> -->
                         </el-col>
                     </el-row>
@@ -225,17 +261,17 @@
 </template>
 
 <script setup lang="ts">
-import { ElMessage,ElTable } from 'element-plus';
-import { onMounted, ref, reactive, Ref, onBeforeMount,watch,computed } from 'vue'
+import { ElMessage, ElTable } from 'element-plus';
+import { onMounted, ref, reactive, Ref, onBeforeMount, watch, computed } from 'vue'
 import { Right } from '@element-plus/icons-vue'
 import { ElNotification } from 'element-plus'
 import * as echarts from 'echarts';
 import { forEach } from 'lodash';
 import internal from 'stream';
-const calcMode=ref()
+const calcMode = ref()
 const distance = ref()
-const ifSpeedScroll=ref(true)
-const ifPressScroll=ref(true)
+const ifSpeedScroll = ref(true)
+const ifPressScroll = ref(true)
 const ipc = require('electron').ipcRenderer;
 const ifSpeed = ref(false)
 const ifPressure = ref(false)
@@ -267,35 +303,50 @@ const speedClasses = reactive([
 ])
 const speedTable = ref<InstanceType<typeof ElTable>>()
 // const speedTable=ref()
-type speeddata={
-    id:number,
-    currentSpeed:number,
-    data:any[]
+type speeddata = {
+    id: number,
+    currentSpeed: number,
+    data: speeddataitem[]
 }
-const speedData:speeddata=reactive({
-    id:0,
-    currentSpeed:0,
-    data:[]
+type speeddataitem = {
+    id: number,
+    type: string,
+    distance: number,
+    time: number,
+    speed: number
+}
+const speedData: speeddata = reactive({
+    id: 0,
+    currentSpeed: 0,
+    data: []
 })
-type pressdata={
-    id:number,
-    cnt35:number,
-    ok35:number,
-    cnt50:number,
-    ok50:number,
-    cnt100:number,
-    ok100:number,
-    data:any[]
+type pressdata = {
+    id: number,
+    cnt35: number,
+    ok35: number,
+    cnt50: number,
+    ok50: number,
+    cnt100: number,
+    ok100: number,
+    data: pressdataitem[]
 }
-const pressData:pressdata=reactive({
-    id:0,
-    cnt35:0,
-    ok35:0,
-    cnt50:0,
-    ok50:0,
-    cnt100:0,
-    ok100:0,
-    data:[]
+type pressdataitem = {
+    id: number,
+    type: string,
+    per35: number,
+    per50: number,
+    per100: number,
+    perAll: number
+}
+const pressData: pressdata = reactive({
+    id: 0,
+    cnt35: 0,
+    ok35: 0,
+    cnt50: 0,
+    ok50: 0,
+    cnt100: 0,
+    ok100: 0,
+    data: []
 })
 const bauds = [
     {
@@ -324,24 +375,24 @@ const bauds = [
 watch(
     calcMode,
     (value, oldValue) => {
-      console.log(value, oldValue)
-    if(calcMode.value=="speed"){
-        ifSpeed.value=true
-        ifDraw.value=false
-        ifPressure.value=false
+        console.log(value, oldValue)
+        if (calcMode.value == "speed") {
+            ifSpeed.value = true
+            ifDraw.value = false
+            ifPressure.value = false
+        }
+        if (calcMode.value == "press") {
+            ifSpeed.value = false
+            ifDraw.value = false
+            ifPressure.value = true
+        }
+        if (calcMode.value == "pic") {
+            ifSpeed.value = false
+            ifDraw.value = true
+            ifPressure.value = false
+        }
     }
-    if(calcMode.value=="press"){
-        ifSpeed.value=false
-        ifDraw.value=false
-        ifPressure.value=true
-    }
-    if(calcMode.value=="pic"){
-        ifSpeed.value=false
-        ifDraw.value=true
-        ifPressure.value=false
-    }
-    }
-  )
+)
 const handleSpeedClassChange = () => {
     // console.log(speedClass.value)
     let exist = false
@@ -354,7 +405,7 @@ const handleSpeedClassChange = () => {
         speedClasses.push({
             label: speedClass.value,
             value: speedClass.value
-          
+
         })
     }
 }
@@ -447,25 +498,28 @@ const handleClick = () => {
         sp.on('readable', () => {
             let str = sp.read()
             let parseStr;
-            if(ifSpeed.value){
-                let time=Number(str.toString("ascii"))
+
+            if (ifSpeed.value) {
+                let time = Number(str.toString("ascii"))
                 speedData.id++
                 speedData.data.push({
-                    id:speedData.id,
-                    type:speedClass.value,
-                    distance:distance.value,
-                    time:time,
-                    speed:(distance.value*1000)/time,
+                    id: speedData.id,
+                    type: speedClass.value,
+                    distance: distance.value,
+                    time: time,
+                    speed: (distance.value * 1000) / time,
                 })
-                speedData.currentSpeed=(distance.value*1000)/time
-                if(speedTable.value!=null&& ifSpeedScroll.value){
+                speedData.currentSpeed = (distance.value * 1000) / time
+                if (speedTable.value != null && ifSpeedScroll.value) {
                     // speedTable.value.scrollTo
-                speedTable.value.scrollTo({
-                    left:0,
-                    top:60*speedData.id,
-                    behavior: 'smooth'
-                })}
+                    speedTable.value.scrollTo({
+                        left: 0,
+                        top:100 * speedData.id,
+                        behavior: 'smooth'
+                    })
+                }
             }
+
             if (ifDraw.value) {
                 // data.shift();
                 data.push(strTokPa(str.toString("ascii")));
@@ -478,6 +532,9 @@ const handleClick = () => {
                         }
                     ]
                 });
+            }
+            if (ifAutoSave.value) {
+                saveOnce(str.toString("ascii"))
             }
             if (str != null) {
                 if (modeRec.value != "binary")
@@ -514,12 +571,13 @@ onBeforeMount(() => {
         // 当filename等于null的时候表示用户点击了取消按钮
         // 当用户点击保存按钮的时候filename的值是对应文件的绝对路径
         console.log(filename)
-        let data = "123145"
-        ipc.send("asynchronous-message", data);
+        let data = ""
+        ipc.send("save-message", data);
+        saveBefore()
 
         //  
     })
-    ipc.on('asynchronous-reply', function (event: any, filename: any) {
+    ipc.on('save-reply', function (event: any, filename: any) {
 
         console.log(filename)
 
@@ -527,8 +585,43 @@ onBeforeMount(() => {
     })
 })
 
+function saveData(str: string) {
+    ipc.send("save-message", str);
+}
+const saveOnce = (str: string) => {
+    if (ifSpeed) {
+        saveData(speedDataToStr(speedData.data[speedData.data.length-1]))
+    } else {
+        if (ifPressure) {
+            // saveData()
+        } else {
+            saveData(str + "\n")
+        }
+    }
+}
+const saveBefore=()=>{
+    if (ifSpeed) {
+        let str=""
+        speedData.data.forEach((s)=>{
+            str+=speedDataToStr(s)
+        })
+        saveData(str)
+    } else {
+        if (ifPressure) {
+            // saveData()
+        } else {
+          
+        }
+    }
+}
+const speedDataToStr = (d: speeddataitem) => {
+    console.log(d)
+    return d.id + "," + d.type + "," +
+        d.distance + "," +
+        d.time + "," +
+        d.speed + "\n"
 
-
+}
 interface DataItem {
     name: string;
     value: [string, number];
@@ -657,24 +750,24 @@ onMounted(async () => {
 })
 
 </script>
-<style>
-/* .el-row {
+<style>/* .el-row {
   margin-bottom: 20px;
 } */
 .el-row:last-child {
-  margin-bottom: 0;
+    margin-bottom: 0;
 }
+
 .el-col {
-  border-radius: 4px;
+    border-radius: 4px;
 }
 
 .grid-content {
     text-align: center;
- line-height:36px;
-  border-radius: 4px;
-  min-height: 36px;
+    line-height: 36px;
+    border-radius: 4px;
+    min-height: 36px;
 }
-.simpleUnit{
-    border:solid 1px rgb(177, 244, 205);
-}
-</style>
+
+.simpleUnit {
+    border: solid 1px rgb(177, 244, 205);
+}</style>
