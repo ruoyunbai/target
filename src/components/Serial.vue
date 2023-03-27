@@ -1,8 +1,8 @@
 <template>
     <el-row>
-        <el-col :span="8">
-            <div class="grid-content ep-bg-purple-dark" />
-            <el-select v-model="value" style="width:248px" :disabled="!portsLoaded" class="m-4" placeholder="选择串口"
+        <el-col :span="5">
+            <!-- <div class="grid-content ep-bg-purple-dark" /> -->
+            <el-select v-model="value"  :disabled="!portsLoaded" class="m-4" placeholder="选择串口"
                 size="large">
                 <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value" />
             </el-select>
@@ -17,14 +17,33 @@
                 </el-select>
             </el-tooltip>
             <div></div>
+            <div class="parent">
             <el-button :type="buttonType" v-on:click="handleClick()">{{ buttonContent }}</el-button>
+            <el-card class="box-card">
+                <template #header>
+                    <div>
+                        <span>发送设置</span>
+                    </div>
+                </template>
+                <!-- <div class="mb-2 flex items-center text-sm">
+                    <el-radio-group v-model="modeSend" class="ml-4">
+                        <el-radio label="ascii" size="small">ASC II</el-radio>
+                        <el-radio label="utf8" size="small">UTF8</el-radio>
+                        <el-radio label="hex" size="small">HEX</el-radio>
+                        <el-radio label="binary" size="small">BIN</el-radio>
+                    </el-radio-group>
+                </div> -->
+                <!-- <el-divider /> -->
+                <el-checkbox v-model="ifSendAutoLine" label="自动换行" size="small" />
+            </el-card>
+            <div  class="bottom">
             <el-card class="box-card">
                 <template #header>
                     <div>
                         <span>接收设置</span>
                     </div>
                 </template>
-                <div class="mb-2 flex items-center text-sm">
+                <!-- <div class="mb-2 flex items-center text-sm">
                     <el-text class="mx-1" type="success">编码</el-text>
                     <div></div>
                     <el-radio-group v-model="modeRec" class="ml-4">
@@ -33,8 +52,8 @@
                         <el-radio label="hex" size="small">HEX</el-radio>
                         <el-radio label="binary" size="small">BIN</el-radio>
                     </el-radio-group>
-                </div>
-                <el-divider />
+                </div> -->
+                <!-- <el-divider /> -->
                 <div>
                     <el-text class="mx-1" type="success">功能选择</el-text>
                     <div></div>
@@ -52,26 +71,11 @@
                     <el-checkbox v-model="ifAutoSave" @change="handleSave()" label="自动保存" size="small" />
                 </div>
             </el-card>
-            <el-card class="box-card">
-                <template #header>
-                    <div>
-                        <span>发送设置</span>
-                    </div>
-                </template>
-                <!-- <div class="mb-2 flex items-center text-sm">
-                    <el-radio-group v-model="modeSend" class="ml-4">
-                        <el-radio label="ascii" size="small">ASC II</el-radio>
-                        <el-radio label="utf8" size="small">UTF8</el-radio>
-                        <el-radio label="hex" size="small">HEX</el-radio>
-                        <el-radio label="binary" size="small">BIN</el-radio>
-                    </el-radio-group>
-                </div> -->
-                <el-divider />
-                <el-checkbox v-model="ifSendAutoLine" label="自动换行" size="small" />
-            </el-card>
+           </div>
+           </div>
         </el-col>
-        <el-col :span="16">
-            <div class="grid-content ep-bg-purple-light" />
+        <el-col :span="19">
+            <!-- <div class="grid-content ep-bg-purple-light" /> -->
             <el-card class="box-card">
 
                 <el-input style="white-space: pre-line;" v-model="content" :rows="10" type="textarea"
@@ -166,17 +170,17 @@
                     <el-row><el-col :span="24">
                             <el-row>
                                 <el-col :span="4">
-                                    <div style="background-color:aquamarine" class="grid-content ep-bg-purple">传感器类型</div>
+                                    <div  class="grid-content ep-bg-purple">传感器类型</div>
                                 </el-col>
                                 <el-col :span="8">
-                                    <div style="background-color:azure" class="grid-content ep-bg-purple">传感器总数</div>
+                                    <div  class="grid-content ep-bg-purple">传感器总数</div>
                                 </el-col>
                                 <el-col :span="8">
-                                    <div style="background-color:aquamarine" class="grid-content ep-bg-purple">已接收传感器总数
+                                    <div  class="grid-content ep-bg-purple">已接收传感器总数
                                     </div>
                                 </el-col>
                                 <el-col :span="4">
-                                    <div style="background-color:azure" class="grid-content ep-bg-purple">达标率</div>
+                                    <div class="grid-content ep-bg-purple">达标率</div>
                                 </el-col>
                             </el-row>
                             <el-row>
@@ -769,5 +773,150 @@ onMounted(async () => {
 }
 
 .simpleUnit {
-    border: solid 1px rgb(177, 244, 205);
-}</style>
+    /* border: solid 1px rgb(177, 244, 205);
+     */
+     text-align: center;
+    
+}
+.parent {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.bottom {
+  /* margin-top: auto; */
+  /* margin-bottom: 100px; */
+}
+
+
+/* 整个布局的配色 */
+.el-row {
+  /* background-color: #f7f7f7; */
+  /* border: 1px solid #ddd; */
+  /* box-shadow: 0 0 5px rgba(0,0,0,0.3); */
+  /* border-radius: 5px; */
+  padding-top: 2px;
+  /* margin-bottom: 10px; */
+}
+
+/* 下拉框的配色 */
+.el-select,
+.el-input {
+  background-color: #f5f5f5;
+  border-color: #d9d9d9;
+  border-radius: 4px;
+}
+
+/* 单选框、复选框和开关的配色 */
+.el-radio,
+.el-checkbox,
+.el-switch {
+  border-color: #d9d9d9;
+}
+
+/* 按钮的配色 */
+.el-button {
+  background-color: #555;
+  border-color: #555;
+  color: #fff;
+}
+
+.el-button:hover {
+  background-color: #333;
+  border-color: #333;
+}
+
+/* 卡片的配色 */
+.el-card {
+  background-color: #fff;
+  border: 1px solid #ddd;
+  box-shadow: 0 0 5px rgba(0,0,0,0.3);
+  border-radius: 5px;
+  margin-bottom: 20px;
+}
+
+/* 头部文字的配色 */
+.el-card__header {
+  background-color: #f5f5f5;
+  border-radius: 5px 5px 0 0;
+  padding: 10px 20px;
+}
+
+/* 分割线的配色 */
+.el-divider {
+  background-color: #ddd;
+}
+
+/* 提示框的配色 */
+.el-tooltip {
+  background-color: #333;
+  color: #fff;
+}
+
+
+
+
+
+
+body {
+  background-color: #f2f2f2;
+}
+
+/* 标题和文本颜色为深灰色 */
+h1, p {
+  color: #333333;
+}
+
+/* 选择框、按钮、卡片、分割线和工具提示的背景色为淡灰色 */
+.el-select,
+.el-card,
+.el-divider,
+.el-tooltip {
+  background-color: #e6e6e6;
+}
+
+/* 选择框、按钮、卡片、分割线和工具提示的边框颜色为深灰色 */
+.el-select,
+.el-card,
+.el-divider,
+.el-tooltip {
+  border-color: #666666;
+}
+
+/* 单选框、多选框和文本输入框的边框颜色为浅灰色 */
+.el-radio,
+.el-checkbox,
+.el-input {
+  border-color: #cccccc;
+}
+
+/* 单选框、多选框和文本输入框的背景色为淡灰色 */
+.el-radio,
+.el-checkbox,
+.el-input {
+  background-color: #e6e6e6;
+}
+
+/* 单选框、多选框和文本输入框的文本颜色为深灰色 */
+.el-radio,
+.el-checkbox,
+.el-input {
+  color: #333333;
+}
+
+/* 文本输入框的高度为50px */
+.el-input {
+  height: 50px;
+}
+
+/* 左侧栏的宽度为30% */
+.el-col:first-child {
+  width: 30%;
+}
+
+/* 右侧栏的宽度为70% */
+.el-col:last-child {
+  width: 70%;
+}
+</style>
