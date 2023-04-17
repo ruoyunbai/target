@@ -6,7 +6,7 @@
     @select="handleSelect"
   >
     <el-menu-item index="/serial">Serial</el-menu-item>
-    <!-- <el-menu-item index="/mqtt">MQTT</el-menu-item> -->
+    <el-menu-item index="/mqtt">MQTT</el-menu-item>
   
   </el-menu>
   <transition name="el-fade-in-linear">
