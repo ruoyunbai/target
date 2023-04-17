@@ -523,7 +523,7 @@ const handleClick = () => {
                     })
                 }
             }
-
+            //TODO pressure没写 
             if (ifDraw.value) {
                 // data.shift();
                 data.push(strTokPa(str.toString("ascii")));
